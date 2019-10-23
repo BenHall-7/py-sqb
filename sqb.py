@@ -51,13 +51,24 @@ class Sqb:
         for offset in offsets:
             io.seek(start_pos + offset)
             self.seqs.append(Seq(io))
+    
+    def write(self, io):
+        pass
 
 if __name__ == "__main__":
+    if len(sys.argv) <= 1:
+        sys.exit("Expected arg: <file>")
     filename = sys.argv[1]
-    sqb = None
-    with open(filename, "rb") as i:
-        sqb = Sqb(i)
-    yaml_str = yaml.dump(sqb, indent=2)
-    with open("out.yml", "w") as o:
-        o.write(yaml_str)
+    if filename.endswith(".yml"):
+        print("creating sqb...")
+        print("unimplemented")
+    else:
+        print("dumping sqb...")
+        sqb = None
+        with open(filename, "rb") as i:
+            sqb = Sqb(i)
+        yaml_str = yaml.dump(sqb, indent=2)
+        with open("out.yml", "w") as o:
+            o.write(yaml_str)
+    
     print("Complete")
