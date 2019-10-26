@@ -2,7 +2,12 @@ import yaml
 import sys
 import struct
 
+class HexInt(int): pass
+
 MAGIC = b"SQB\x00"
+
+def representer(dumper, data):
+    return yaml.ScalarNode('tag:yaml.org,2002:int', "{0:#010x}".format(data))
 
 def read_u16(io):
     return struct.unpack("<H", io.read(2))[0]
@@ -30,7 +35,7 @@ def write_u64(io, val):
 
 class Entry:
     def __init__(self, io):
-        self.id = read_u64(io)
+        self.id = HexInt(read_u64(io))
         self.unk1 = read_u16(io)
         self.probability = read_u16(io)
         self.unk3 = read_s16(io)
@@ -47,7 +52,7 @@ class Entry:
 
 class Seq:
     def __init__(self, io):
-        self.id = read_u64(io)
+        self.id = HexInt(read_u64(io))
         self.unk1 = read_u16(io)
         count = read_u16(io)
         read_u32(io) #padding
@@ -117,6 +122,7 @@ if __name__ == "__main__":
         obj = None
         with open(filename, "rb") as i:
             obj = Sqb(i)
+        yaml.add_representer(HexInt, representer)
         yaml_str = yaml.dump(obj, indent=2)
         new_name = filename[:-3] + "yml"
         with open(new_name, "w") as o:
