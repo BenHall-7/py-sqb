@@ -7,7 +7,7 @@ class HexInt(int): pass
 MAGIC = b"SQB\x00"
 
 def representer(dumper, data):
-    return yaml.ScalarNode('tag:yaml.org,2002:int', "{0:#010x}".format(data))
+    return yaml.ScalarNode('tag:yaml.org,2002:int', "{0:#012x}".format(data))
 
 def read_u16(io):
     return struct.unpack("<H", io.read(2))[0]
